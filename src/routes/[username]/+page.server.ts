@@ -3,7 +3,11 @@ import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 
 export const load = (async ({ params }) => {
-    const uid = params.username;
+    const username = params.username;
+
+    const usernameDoc = await adminDB.collection("usernames").doc(username).get();
+    const { uid } = usernameDoc.data()!;
+    console.log(uid);
 
     if(!uid) {
         throw error(404, "That username does not exist");

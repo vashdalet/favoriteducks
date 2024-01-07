@@ -5,22 +5,30 @@ import type { PageServerLoad, Actions } from './$types';
 
 export const load = (async ({ locals }) => {
     const uid = locals.userID;
+
+    console.log(uid);
+
     const response = await fetch('https://random-d.uk/api/v2/random');
     const json = await response.json();
     const imgURL = json.url;
 
-    const userRef = adminDB.collection("users").doc(uid!);
-    let user = (await userRef.get()).data()!;
+    let user = null;
+
+    if (uid) {
+        const userRef = adminDB.collection("users").doc(uid!);
+        user = (await userRef.get()).data()!;
+    }
 
     return {
         uid,
         imgURL,
-        ducks: user.ducks
+        ducks: user?.ducks ?? [],
+        username: user?.username
     };
 }) satisfies PageServerLoad;
 
 export const actions = {
-    default: async ( { locals, request, params }) => {
+    add: async ( { locals, request, params } ) => {
         const uid = locals.userID;
 
         const data = await request.formData();
@@ -29,11 +37,29 @@ export const actions = {
         const userRef = adminDB.collection("users").doc(uid!);
         let user = (await userRef.get()).data()!;
         
-        user.ducks.push(url);
+        user.ducks.unshift(url);
 
         await userRef.update(user);
-
-        console.log(user.ducks)
     },
+    delete: async ( { locals, request } ) => {
+        const uid = locals.userID;
+
+        const data = await request.formData();
+        const url = data.get('imgURL');
+
+        const userRef = adminDB.collection("users").doc(uid!);
+        let user = (await userRef.get()).data()!;
+
+        const index = user.ducks.indexOf(url);
+        
+        if (index !== -1) {
+            user.ducks.splice(index, 1);
+            await userRef.update(user);
+        }
+    
+    }
 } satisfies Actions;
+
+
+
 
