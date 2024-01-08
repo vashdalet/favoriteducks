@@ -35,7 +35,7 @@
 
 {#if data.uid}
     <main class="content-center">
-        <h1 class="text-7xl text-purple-400 text-center mx-auto mt-8">Welcome to Dasha's webpage!</h1>
+        <h1 class="text-7xl text-purple-400 text-center mx-auto mt-8">Welcome!</h1>
         <div class= "text-xl my-8 text-center font-light">
             <p class="my-3">Here you can save images of ducks and then share them with your friends</p>
             <p class="my-2">Link to share your collection: <a class="font-bold text-green-400" {href}>{href}</a></p>
@@ -60,6 +60,16 @@
     </main>
 {:else}
     <main class="content-center">
-        <button class="btn btn-outline btn-primary block mx-auto my-4" on:click={signInWithGoogle}>Log in</button>
+        <h1 class="text-7xl text-purple-400 text-center mx-auto mt-8">Welcome to this webpage!</h1>
+        <div class= "text-xl my-8 text-center font-light">
+            <p class="my-3">Here you can save images of ducks and then share them with your friends</p>
+            <p class="my-2">To add the pictures to your collection you need to log in</p>
+            <button class="btn btn-outline btn-primary block mx-auto my-4" on:click={signInWithGoogle}>Log in</button>
+        </div>
+
+        <div class="flex items-center justify-center">
+            <img class="w-3/5 " src={data.imgURL} alt="Duck image"/>
+        </div>
+
     </main>
 {/if}
